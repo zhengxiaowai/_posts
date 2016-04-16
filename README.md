@@ -1,3 +1,3 @@
 # 文章备份
 
-[博客地址] (zhengxiaowai.cc)
+[博客地址] (http://www.zhengxiaowai.cc)
