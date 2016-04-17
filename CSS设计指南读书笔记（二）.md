@@ -13,7 +13,7 @@ tags: CSS
 - border
 - margin
 
-它们由内而外分别是 ```content->panding->border->margin``` 
+它们由内而外分别是 **content->panding->border->margin** 
 
 ### 盒子的边框
 
@@ -98,7 +98,7 @@ p#p2 {margin: 5px 0px;}
 
 float 属性目的是实现文本围绕图片，同时也能做分栏。
 
--  文本围绕图片
+#### 文本围绕图片
 
 ```html
     <img src="st3.png" height="50" width="130">
@@ -117,7 +117,7 @@ float 属性目的是实现文本围绕图片，同时也能做分栏。
 img {float:left;}
 ```
 
--  分栏
+#### 分栏
 
 再次设置一次 float 并设置一下 p 的 width 属性。同时你的一行足够容纳下这些元素。
 
@@ -170,7 +170,7 @@ img {float:left;}
 
 三种方法不能应付的场景：
 
-不能再下来拉菜单的顶级元素使用 ```overflow:hidden``` ，因为下拉框的下拉内容是显示在父元素的区域外，而这个属性设置的是不显示超出父元素的内容，这就导致下拉框不显示。
+不能再下来拉菜单的顶级元素使用 **overflow:hidden** ，因为下拉框的下拉内容是显示在父元素的区域外，而这个属性设置的是不显示超出父元素的内容，这就导致下拉框不显示。
 
 不能对已经靠自动外边距居中的元素使用“浮动父元素”技术，否则它就不会再居中，而是根据浮动值浮动到左边或右边了。
 
@@ -298,8 +298,7 @@ div {
 }
 ```
 
-通过把 background-position 设定为50% 50%，把background-repeat 设定为no-repeat，
-实现了图片在背景区域内居中的效果。
+通过把 background-position 设定为50% 50%，把background-repeat 设定为no-repeat，实现了图片在背景区域内居中的效果。
 
 ### 背景尺寸
 
@@ -322,6 +321,7 @@ background-attachment 属性控制滚动元素内的背景图片是否随元素�
 ```css
 body {background:url(images/watermark.png) center #fff no-repeat contain fixed;}
 ```
+
 第一个路径，第二个是位置，第三个是背景色，第四个是重复方式，第五和是背景尺寸，都五个是是否滚动。
 
 ### 多背景图片
