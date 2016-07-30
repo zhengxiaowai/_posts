@@ -1,12 +1,9 @@
----
-title: RESTful API 设计总结
-date: 2016-04-16 23:26:52
-tags: REST
----
 
 以前看见的api接口文档都是一个 word 里面一堆表格，写着各种接口，如今发现的这个好工具能舒服不少，主要用 markdown 就可以写了，还能自动生成代码。没用过的可以试试，叫做[apiary](https://apiary.io)。
 
-这次我负责设计的 API 是个评价工具。接口本身不复杂，但是第一次免不了磕磕碰碰，前前后后review了3次才过，正正弄了一整天，所以把设计过程中一些东西记下来，总结一下。
+
+<!--more-->
+
 
 # 为什么要有 RESTful API？
 
@@ -171,6 +168,5 @@ POST /records/actions/delete100
 - [理解RESTful架构](http://www.ruanyifeng.com/blog/2011/09/restful)
 - [RESTful API 设计指南](http://www.ruanyifeng.com/blog/2011/09/restful)
 - [RESTful API 设计最佳实践](http://blog.jobbole.com/41233/)
-
 
 
