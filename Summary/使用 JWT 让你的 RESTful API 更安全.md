@@ -134,24 +134,307 @@ Authorization: Bearer <token>
 
 这种无状态的操作可以充分的使用数据的 APIs，甚至是在下游服务上使用，这些 APIs 和哪服务器没有关系，因此，由于没有 cookie 的存在，所以在不存在跨域（CORS, Cross-Origin Resource Sharing）的问题。
 
-## 在 Django 和 Express 中使用 JSON Web Token
+## 在 Flask 和 Express 中使用 JSON Web Token
+
+JWT 在各个 Web 框架中都有 JWT 的包可以直接使用，下面使用 Flask 和 Express 作为例子演示。
+
+- [Flask-JWT](https://pythonhosted.org/Flask-JWT/)
+- ​
+
+下面会使用 [httpie](https://github.com/jkbrzt/httpie) 作为演示工具：
+
+```shell
+HTTPie: HTTP client, a user-friendly cURL replacement.
+
+- Download a URL to a file:
+    http -d example.org
+
+- Send form-encoded data:
+    http -f example.org name='bob' profile-picture@'bob.png'
+
+- Send JSON object:
+    http example.org name='bob'
+
+- Specify an HTTP method:
+    http HEAD example.org
+
+- Include an extra header:
+    http example.org X-MyHeader:123
+
+- Pass a user name and password for server authentication:
+    http -a username:password example.org
+
+- Specify raw request body via stdin:
+    cat data.txt | http PUT example.org
+```
+
+### Flask 中使用 JSON Web Token
+
+这里的演示是 ```Flask-JWT``` 的 Quickstart内容。
+
+安装必要的软件包：
+
+```shell
+pip install flask
+pip install Flask-JWT
+```
+
+一个简单的 DEMO：
+
+```python
+from flask import Flask
+from flask_jwt import JWT, jwt_required, current_identity
+from werkzeug.security import safe_str_cmp
+
+class User(object):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+    def __str__(self):
+        return "User(id='%s')" % self.id
+
+users = [
+    User(1, 'user1', 'abcxyz'),
+    User(2, 'user2', 'abcxyz'),
+]
+
+username_table = {u.username: u for u in users}
+userid_table = {u.id: u for u in users}
+
+def authenticate(username, password):
+    user = username_table.get(username, None)
+    if user and safe_str_cmp(user.password.encode('utf-8'), password.encode('utf-8')):
+        return user
+
+def identity(payload):
+    user_id = payload['identity']
+    return userid_table.get(user_id, None)
+
+app = Flask(__name__)
+app.debug = True
+app.config['SECRET_KEY'] = 'super-secret'
+
+jwt = JWT(app, authenticate, identity)
+
+@app.route('/protected')
+@jwt_required()
+def protected():
+    return '%s' % current_identity
+
+if __name__ == '__main__':
+    app.run()
+```
+
+首先需要获取用户的 JWT：
+
+```shell
+% http POST http://127.0.0.1:5000/auth username='user1' password='abcxyz'             ~
+HTTP/1.0 200 OK
+Content-Length: 193
+Content-Type: application/json
+Date: Sun, 21 Aug 2016 03:48:41 GMT
+Server: Werkzeug/0.11.10 Python/2.7.10
+
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eSI6MSwiaWF0IjoxNDcxNzUxMzIxLCJuYmYiOjE0NzE3NTEzMjEsImV4cCI6MTQ3MTc1MTYyMX0.S0825N6IliQb65QoJfUXb3IGq-j9OVJpHBh-bcUz_gc"
+}
+```
+
+使用 ```@jwt_required()``` 装饰器来保护你的 API
+
+```python
+@app.route('/protected')
+@jwt_required()
+def protected():
+    return '%s' % current_identity
+```
+
+这时候你需要在 HTTP 的 header 中使用 ```Authorization: JWT <token>``` 才能获取数据
+
+```shell
+% http http://127.0.0.1:5000/protected Authorization:"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eSI6MSwiaWF0IjoxNDcxNzUxMzIxLCJuYmYiOjE0NzE3NTEzMjEsImV4cCI6MTQ3MTc1MTYyMX0.S0825N6IliQb65QoJfUXb3IGq-j9OVJpHBh-bcUz_gc"
+HTTP/1.0 200 OK
+Content-Length: 12
+Content-Type: text/html; charset=utf-8
+Date: Sun, 21 Aug 2016 03:51:20 GMT
+Server: Werkzeug/0.11.10 Python/2.7.10
+
+User(id='1')
+```
+
+不带 JWT 的时候会返回如下信息：
+
+```shell
+% http http://127.0.0.1:5000/protected                                                ~
+HTTP/1.0 401 UNAUTHORIZED
+Content-Length: 125
+Content-Type: application/json
+Date: Sun, 21 Aug 2016 03:49:51 GMT
+Server: Werkzeug/0.11.10 Python/2.7.10
+WWW-Authenticate: JWT realm="Login Required"
+
+{
+    "description": "Request does not contain an access token",
+    "error": "Authorization Required",
+    "status_code": 401
+}
+```
+
+### Express 中使用 JSON Web Token
+
+Auth0 提供了 express-jwt 这个包，在 express 可以很容易的集成。
+
+```shell
+npm install express --save
+npm install express-jwt --save
+npm install body-parser --save
+npm install jsonwebtoken --save
+npm install shortid --save
+```
+
+本例子中只是最简单的使用方法，更多使用方法参看 [express-jwt](https://github.com/auth0/express-jwt)
+
+```javascript
+var express = require('express');
+var expressJwt = require('express-jwt');
+var bodyParser = require('body-parser');
+var jwt = require('jsonwebtoken');
+var shortid = require('shortid');
+
+var app = express();
+
+app.use(bodyParser.json());
+app.use(expressJwt({secret: 'secret'}).unless({path: ['/login']}));
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send('invalid token');
+  }
+});
 
 
+app.post('/login', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
 
+  if (!username) {
+    return res.status(400).send('username require');
+  }
+  if (!password) {
+    return res.status(400).send('password require');
+  }
 
+  if (username != 'admin' && password != 'password') {
+    return res.status(401).send('invaild password');
+  }
+  
+  var authToken = jwt.sign({username: username}, 'secret');
+  res.status(200).json({token: authToken});
 
+});
 
+app.post('/user', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+  var country = req.body.country;
+  var age = req.body.age;
+
+  if (!username) {
+    return res.status(400).send('username require');
+  }
+  if (!password) {
+    return res.status(400).send('password require');
+  }
+  if (!country) {
+    return res.status(400).send('countryrequire');
+  }
+  if (!age) {
+    return res.status(400).send('age require');
+  }
+
+  res.status(200).json({
+    id: shortid.generate(),
+    username: username,
+    country: country,
+    age: age
+  })
+})
+
+app.listen(3000);
+```
+
+ ```express-jwt``` 作为 express 的一个中间件，需要设置 ```secret``` 作为秘钥，unless 可以排除某个接口。
+
+默认的情况下，解析 JWT 失败会抛出异常，可以通过以下设置来处理该异常。
+
+```javascript
+app.use(expressJwt({secret: 'secret'}).unless({path: ['/login']}));
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send('invalid token');
+  }
+});
+```
+
+```/login``` 忽略的 JWT 认证，通过这个接口获取某个用户的 JWT
+
+```javascript
+% http POST http://localhost:3000/login username='admin' password='password' country='CN' age=22  
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 143
+Content-Type: application/json; charset=utf-8
+Date: Sun, 21 Aug 2016 06:57:42 GMT
+ETag: W/"8f-iMzAS1K5StDQgtNnVSvqtQ"
+X-Powered-By: Express
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNDcxNzYyNjYyfQ.o5RFJB4GiR28HzXbSptU6MsPwW1tSXSDIjlzn7erG0M"
+}
+
+```
+
+不使用 JWT 的时候
+
+```javascript
+% http POST http://localhost:3000/user username='hexiangyu' password='password'       ~
+HTTP/1.1 401 Unauthorized
+Connection: keep-alive
+Content-Length: 13
+Content-Type: text/html; charset=utf-8
+Date: Sun, 21 Aug 2016 07:00:02 GMT
+ETag: W/"d-j0viHsPPu6FaNJ6cXoiFeQ"
+X-Powered-By: Express
+
+invalid token
+
+```
+
+使用 JWT 就可以成功调用
+
+```javascript
+% http POST http://localhost:3000/user Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNDcxNzYyNjYyfQ.o5RFJB4GiR28HzXbSptU6MsPwW1tSXSDIjlzn7erG0M" username='hexiangyu' password='password' country='CN' age=22
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 66
+Content-Type: application/json; charset=utf-8
+Date: Sun, 21 Aug 2016 07:04:34 GMT
+ETag: W/"42-YnGYuyDLxpVUexEGEcQj1g"
+X-Powered-By: Express
+
+{
+    "age": "22",
+    "country": "CN",
+    "id": "r1sFMCUc",
+    "username": "hexiangyu"
+}
+
+```
 
 ## Reference
 
 - [JSON Web Token Introduction](https://jwt.io/introduction/)
 - [IANA JSON Web Token](http://www.iana.org/assignments/jwt/jwt.xhtml)
-
-
-
-
-
-
-
-
-
+- [Flask-JWT](https://pythonhosted.org/Flask-JWT/)
+- [express-jwt](https://github.com/auth0/express-jwt) 
