@@ -1,8 +1,4 @@
----
-title: Django 带数据迁移 Model
-date: 2016-04-22 17:02:09
-tags: Django
----
+# Django 带数据迁移 Model
 
 参考: [Stack Overflow](http://stackoverflow.com/questions/25648393/how-to-move-a-model-between-two-django-apps-django-1-7/26472482#26472482)
 

@@ -1,8 +1,5 @@
----
-title: Django 的 migtarion 冲突处理
-date: 2016-04-18 08:26:28
-tags: Django
----
+# 「译」Django 的 migtarion 冲突处理
+
 **翻译自 Oana Ratiu 的《[Django Migrations and How to Manage Conflicts](https://www.algotech.solutions/blog/python/django-migrations-and-how-to-manage-conflicts/)》,水平不足欢迎指正。**
 
 Migrantion 是 Django 最有用的的特性之一，但是对于我来说改变 Model 这是一个很可怕的任务。尽管能够阅读文档，我仍然很害怕 migration 的冲突或者丢失数据，或者需要手动处理 migration 文件，或者这样那样的事情。事实上，一旦理解它们，migration 是很酷的、很有用的。关于以上的问题你将不会有任何疑问。

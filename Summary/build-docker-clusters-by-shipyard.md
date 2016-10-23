@@ -1,3 +1,5 @@
+# 使用 Shipyard 搭建 Docker 集群
+
 Shipyard 是 docker web ui 的一种，能够可视化操作 docker，可以使用脚本一键搭建，这里主要的问题的 docker hub 被墙的问题。
 Shipyard 的安装安装脚本能够自动部署节点和主机连接，方便搭建 docker 的集群环境。
 

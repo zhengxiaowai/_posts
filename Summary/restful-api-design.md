@@ -1,11 +1,6 @@
 
-以前看见的api接口文档都是一个 word 里面一堆表格，写着各种接口，如今发现的这个好工具能舒服不少，主要用 markdown 就可以写了，还能自动生成代码。没用过的可以试试，叫做[apiary](https://apiary.io)。
 
-
-<!--more-->
-
-
-# 为什么要有 RESTful API？
+# 设计 RESTful API？
 
 如今的 web 应用前后端相对的独立了，后端接收和返回一些交互数据，前后端也就这点联系了。。。
 
@@ -17,13 +12,13 @@ REST 的全称为 Representational State Transfer， 即是资源的**表现层�
 
 **REST**的核心在于**资源**和**转化**，就是如何把资源进行转化，去设计API接口。一种资源例如 ** /image ** ，可以使用不同的 HTTP 方发对资源进行转化。HTTP 中有GET、POST、PUT、PATCH、DELETE、OPTION、HEAD等方法。利用这些方法对资源进行配置。
 
-# 同一种资源
+## 同一种资源
 
 REST 设计中最核心莫过于**同一种资源** 。例如**/image**，在浏览器中可以通过**www.domain.com/image**访问该资源。
 
 通过不同的请求方法实现增删改查
 
-## 获取
+### 获取
 
 通过GET方法获取图片: 
 
@@ -31,7 +26,7 @@ REST 设计中最核心莫过于**同一种资源** 。例如**/image**，在浏
 GET www.domain.com/image
 ```
 
-## 删除
+### 删除
 
 通过DELETE方法删除图片
 
@@ -39,7 +34,7 @@ GET www.domain.com/image
 DELETE www.domain.com/image
 ```
 
-## 添加
+### 添加
 
 通过POST方法在数据库中添加一个图片:
 
@@ -58,7 +53,7 @@ Response 200 (application/json)
     }
 ```
 
-## 修改图片
+### 修改
 
 ```
 PATCH www.domain.com/image
@@ -75,7 +70,7 @@ Response 200 (application/json)
     }
 ```
 
-# URL设计
+## URL设计
 
 URL 作为互联网中对服务器的唯一入口，一个好的 URL 可以很明确定位出这个 URL 是干嘛用的。
 
@@ -132,7 +127,7 @@ POST /reviews  √
 POST /details  √
 ```
 
-# HTTP 方法不够用怎么办？
+## HTTP 方法不够用怎么办？
 
 HTTP 方法毕竟有限，但是我们的需求又是千奇百怪。
 
@@ -150,7 +145,7 @@ DELETE /records/{1...100}
 POST /records/actions/delete100
 ```
 
-# 错误返回
+## 错误返回
 
 错误返回需要错误码和错误信息
 
