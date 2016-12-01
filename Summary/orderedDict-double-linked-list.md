@@ -30,7 +30,7 @@ def __init__(*args, **kwds):
 
 有序字典初始化时候必须为无参数，否则将无法保证顺序。
 
-`OrderDict` 中使用递归的的方式创建双向循环链表，`root[:] = [root, root, None]` 初始化
+`OrderedDict` 中使用递归的的方式创建双向循环链表，`root[:] = [root, root, None]` 初始化
 递归结构。
 
 ```python
