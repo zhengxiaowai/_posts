@@ -120,8 +120,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 
 在用户使用证书或者账号密码登入的时候一个 JSON Web Token 将会返回，同时可以把这个 JWT 存储在local storage、或者 cookie 中，用来替代传统的在服务器端创建一个 session 返回一个 cookie。
 
-![2016-08-20_22:39:23.jpg](http://7xtq0y.com1.z0.glb.clouddn.com/2016-08-20_22:39:23.jpg)
-
+![](https://static.zhengxiaowai.cc/ipic/2017-01-21-165643.jpg)
 当用户想要使用受保护的路由时候，应该要在请求得时候带上 JWT ，一般的是在 header 的 **Authorization** 使用 **Bearer** 的形式，一个包含的 JWT 的请求头的 Authorization 如下：
 
 ```
